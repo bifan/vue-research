@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RenderResearch } from '@/components/research/render-function'
+import { RenderFunctionResearch } from '@/components/research/render-function'
 import { ref, computed, markRaw, onMounted, onUnmounted } from 'vue'
 
 // 当前选择的研究项目
@@ -12,7 +12,7 @@ const researchProjects = [
     name: 'Template vs Render 函数',
     description: 'Vue模板系统与Render函数的对比分析',
     icon: '🔍',
-    component: markRaw(RenderResearch),
+    component: markRaw(RenderFunctionResearch),
   },
   // 在这里可以添加更多的研究项目
   // 示例：
