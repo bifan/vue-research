@@ -12,8 +12,8 @@ const researchProjects = [
     name: 'Template vs Render 函数',
     description: 'Vue模板系统与Render函数的对比分析',
     icon: '🔍',
-    component: markRaw(RenderResearch)
-  }
+    component: markRaw(RenderResearch),
+  },
   // 在这里可以添加更多的研究项目
   // 示例：
   // {
@@ -34,7 +34,9 @@ const researchProjects = [
 
 // 当前显示的研究组件
 const currentResearch = computed(() => {
-  return researchProjects.find(project => project.id === selectedResearch.value) || researchProjects[0]
+  return (
+    researchProjects.find((project) => project.id === selectedResearch.value) || researchProjects[0]
+  )
 })
 
 // 控制"回到顶部"按钮的显示
@@ -49,7 +51,7 @@ const handleScroll = () => {
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
@@ -73,11 +75,11 @@ onUnmounted(() => {
 
     <!-- 研究项目列表 -->
     <div class="research-grid">
-      <div 
-        v-for="project in researchProjects" 
-        :key="project.id" 
+      <div
+        v-for="project in researchProjects"
+        :key="project.id"
         class="research-card"
-        :class="{ 'active': selectedResearch === project.id }"
+        :class="{ active: selectedResearch === project.id }"
         @click="selectedResearch = project.id"
       >
         <div class="card-icon">{{ project.icon }}</div>
@@ -209,11 +211,11 @@ h1 {
   .research-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .research-card {
     padding: 15px;
   }
-  
+
   .back-to-top {
     width: 40px;
     height: 40px;
