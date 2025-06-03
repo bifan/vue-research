@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+
+const route = useRoute()
+const isRouteResearch = computed(() => {
+  return route?.path === '/research'
+})
 </script>
 
 <template>
-  <header>
+  <header v-if="!isRouteResearch">
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
@@ -13,6 +19,7 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/research">要来研究吗</RouterLink>
       </nav>
     </div>
   </header>
