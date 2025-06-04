@@ -40,7 +40,7 @@ const renderDemo = () => {
 
     // 按钮
     h('button', { onClick: increment }, 'Increment'),
-    h('button', { onClick: toggleMessage }, showMessage.value ? 'Hide' : 'Show' + ' Message'),
+    h('button', { onClick: toggleMessage }, showMessage.value ? 'Hide Message' : 'Show Message'),
 
     // 列表部分
     h('div', { class: 'list-section' }, [
@@ -83,7 +83,7 @@ const render = () => {
     // 按钮
     h('button', { onClick: increment }, 'Increment'),
     h('button', { onClick: toggleMessage }, 
-      showMessage.value ? 'Hide' : 'Show' + ' Message'),
+      showMessage.value ? 'Hide Message' : 'Show Message'),
     
     // 列表部分
     h('div', { class: 'list-section' }, [
@@ -120,7 +120,7 @@ const render = () => {
     // 按钮
     h('button', { onClick: increment }, 'Increment'),
     h('button', { onClick: toggleMessage }, 
-      showMessage.value ? 'Hide' : 'Show' + ' Message'),
+      showMessage.value ? 'Hide Message' : 'Show Message'),
     
     // 列表部分
     h('div', { class: 'list-section' }, [
@@ -198,7 +198,7 @@ const toggleFullscreen = () => {
           <button class="action-button" @click="copyCode" title="复制代码">📋</button>
         </div>
       </div>
-      <pre v-pre><code>{{ renderCode }}</code></pre>
+      <pre><code>{{ renderCode }}</code></pre>
     </div>
 
     <div class="demo-result">

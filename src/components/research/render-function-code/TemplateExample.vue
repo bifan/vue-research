@@ -125,7 +125,7 @@ const toggleFullscreen = () => {
           <button class="action-button" @click="copyCode" title="复制代码">📋</button>
         </div>
       </div>
-      <pre v-pre><code>{{ templateCode }}</code></pre>
+      <pre><code>{{ templateCode }}</code></pre>
     </div>
 
     <div class="demo-result">

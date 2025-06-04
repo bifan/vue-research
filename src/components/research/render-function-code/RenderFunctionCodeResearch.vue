@@ -2,9 +2,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import TemplateExample from './TemplateExample.vue'
 import RenderExample from './RenderExample.vue'
-import TreeExample from './TreeExample.vue'
-import DynamicTableTemplate from './DynamicTableTemplate.vue'
-import DynamicTableRender from './DynamicTableRender.vue'
 
 // 控制"回到顶部"按钮的显示
 const showBackToTop = ref(false)
@@ -42,8 +39,6 @@ onUnmounted(() => {
         <ul class="section-nav">
           <li><a href="#intro">介绍</a></li>
           <li><a href="#basic-example">基本对比</a></li>
-          <li><a href="#tree-example">递归树形结构</a></li>
-          <li><a href="#table-example">动态表格生成</a></li>
         </ul>
       </div>
 
@@ -80,36 +75,6 @@ onUnmounted(() => {
           <div class="comparison-box">
             <h3>Render函数实现</h3>
             <RenderExample />
-          </div>
-        </div>
-      </div>
-
-      <!-- 树形结构示例 -->
-      <div id="tree-example" class="section">
-        <h2>递归树形结构对比</h2>
-        <p>
-          树形结构是展示render函数优势的典型场景。通过递归，render函数能够更清晰、高效地处理深层嵌套的数据。
-        </p>
-
-        <TreeExample />
-      </div>
-
-      <!-- 表格动态生成示例 -->
-      <div id="table-example" class="section">
-        <h2>动态表格生成对比</h2>
-        <p>
-          当表格结构需要根据数据动态生成时，使用render函数可以获得更好的控制力和性能。
-          以下示例展示了处理复杂表格结构时的两种实现方式。
-        </p>
-
-        <div class="comparison-container">
-          <div class="comparison-box">
-            <h3>模板实现</h3>
-            <DynamicTableTemplate />
-          </div>
-          <div class="comparison-box">
-            <h3>Render函数实现</h3>
-            <DynamicTableRender />
           </div>
         </div>
       </div>

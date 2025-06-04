@@ -4,23 +4,23 @@ import { RenderFunctionCodeResearch } from '@/components/research/render-functio
 import { ref, computed, markRaw, onMounted, onUnmounted } from 'vue'
 
 // 当前选择的研究项目
-const selectedResearch = ref('render')
+const selectedResearch = ref('render-code')
 
 // 研究项目列表，未来可以添加更多研究项目
 const researchProjects = [
-  {
-    id: 'render',
-    name: 'Template vs Render 函数',
-    description: 'Vue模板系统与Render函数的对比分析',
-    icon: '🔍',
-    component: markRaw(RenderResearch),
-  },
   {
     id: 'render-code',
     name: 'Render 函数代码实例',
     description: '展示Template瓶颈与Render函数优势的代码示例',
     icon: '💻',
     component: markRaw(RenderFunctionCodeResearch),
+  },
+  {
+    id: 'render',
+    name: 'Template vs Render 函数',
+    description: 'Vue模板系统与Render函数的对比分析',
+    icon: '🔍',
+    component: markRaw(RenderResearch),
   },
   // 在这里可以添加更多的研究项目
   // 示例：
