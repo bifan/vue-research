@@ -44,7 +44,6 @@ onUnmounted(() => {
 
       <!-- 介绍部分 -->
       <div id="intro" class="section">
-        <h2>为什么需要对比 Template 和 Render 函数？</h2>
         <p>
           Vue的模板系统非常强大，可以满足大多数开发场景的需求。但在某些特定场景下，模板系统会遇到瓶颈，
           而Render函数则能够提供更大的灵活性和性能优势。本研究通过具体代码对比，展示两种方法的差异和适用场景。
@@ -58,6 +57,10 @@ onUnmounted(() => {
             <li>深层嵌套的递归结构</li>
             <li>需要JavaScript完整能力的场景</li>
             <li>大量数据渲染时的性能瓶颈</li>
+          </ul>
+          <h3>Render 函数的问题:</h3>
+          <ul>
+            <li>DOM 结构不如模板直观</li>
           </ul>
         </div>
       </div>
@@ -78,7 +81,6 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
-
       <!-- 回到顶部按钮 -->
       <div class="back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop">
         <span>↑</span>
