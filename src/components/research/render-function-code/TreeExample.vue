@@ -151,6 +151,66 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
   ])
 }
 `
+
+// 复制代码功能
+const copyCode = async () => {
+  const codeContent = `// Template版本的递归树组件
+<template>
+  <div class="tree-container">
+    <div v-for="node in treeData" :key="node.id">
+      <TreeNode :node="node" />
+    </div>
+  </div>
+</template>
+
+// Render函数实现的树形组件
+const RenderTreeNode = (props: { node: TreeNode }) => {
+  const { node } = props
+  
+  // 递归渲染子节点
+  const renderChildren = () => {
+    if (node.expanded && node.children && node.children.length > 0) {
+      return h('div', { class: 'node-children' }, 
+        node.children.map(child => h(RenderTreeNode, { 
+          node: child,
+          key: child.id
+        }))
+      )
+    }
+    return null
+  }
+  
+  return h('div', { class: 'tree-node' }, [
+    h('div', { 
+      class: 'node-content',
+      onClick: () => toggleNode(node)
+    }, [
+      // 展开/折叠图标
+      node.children && node.children.length > 0 
+        ? h('span', { class: 'node-toggle' }, node.expanded ? '▼' : '►')
+        : null,
+      // 节点标签
+      ' ' + node.label
+    ]),
+    // 递归渲染子节点
+    renderChildren()
+  ])
+}`
+
+  try {
+    await navigator.clipboard.writeText(codeContent)
+    console.log('代码已复制到剪贴板')
+  } catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+
+// 全屏功能
+const isFullscreen = ref(false)
+
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+}
 </script>
 
 <template>
@@ -162,7 +222,20 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
           使用模板的递归需要命名组件，且实现复杂的条件逻辑和嵌套层次较为繁琐。
           由于组件必须先声明再使用，递归模板需要特殊处理。
         </p>
-        <div class="code-display">
+        <div class="code-display" :class="{ fullscreen: isFullscreen }">
+          <div class="code-header">
+            <span class="code-language">Vue Template</span>
+            <div class="code-actions">
+              <button
+                class="action-button"
+                @click="toggleFullscreen"
+                :title="isFullscreen ? '退出全屏' : '全屏显示'"
+              >
+                {{ isFullscreen ? '⤴' : '⤢' }}
+              </button>
+              <button class="action-button" @click="copyCode" title="复制代码">📋</button>
+            </div>
+          </div>
           <pre v-pre><code>{{ TemplateTreeNodeCode }}</code></pre>
         </div>
       </div>
@@ -173,7 +246,20 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
           Render函数可以直接递归调用自身，代码更直观清晰，灵活性更高，
           尤其在处理深层嵌套结构时，控制力和性能都有优势。
         </p>
-        <div class="code-display">
+        <div class="code-display" :class="{ fullscreen: isFullscreen }">
+          <div class="code-header">
+            <span class="code-language">Vue Render Function</span>
+            <div class="code-actions">
+              <button
+                class="action-button"
+                @click="toggleFullscreen"
+                :title="isFullscreen ? '退出全屏' : '全屏显示'"
+              >
+                {{ isFullscreen ? '⤴' : '⤢' }}
+              </button>
+              <button class="action-button" @click="copyCode" title="复制代码">📋</button>
+            </div>
+          </div>
           <pre v-pre><code>{{ RenderTreeNodeCode }}</code></pre>
         </div>
       </div>
@@ -196,6 +282,8 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  max-width: 1700px; /* Increase width for better code display */
+  margin: 0 auto;
   overflow: hidden; /* Prevents content overflow */
 }
 
@@ -208,33 +296,109 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
 
 .code-section {
   flex: 1;
-  min-width: 300px;
-  max-width: calc(50% - 10px); /* Prevents excessive width on large screens */
+  min-width: 450px; /* Increase minimum width for better code display */
+  max-width: calc(50% - 10px);
   background-color: var(--color-background-mute, #f7f7f7);
   padding: 15px;
   border-radius: 8px;
 }
 
 .code-display {
-  background-color: #1e1e1e;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: #2d3748;
+  border-radius: 8px;
+  padding: 20px;
   overflow-x: auto;
   margin-top: 10px;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1a202c;
+  border-bottom: 1px solid #4a5568;
+  border-radius: 8px 8px 0 0;
+  margin: -20px -20px 0 -20px;
+}
+
+.code-language {
+  color: #90cdf4;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+/* Fullscreen styles */
+.code-display.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.code-display.fullscreen .code-header {
+  border-radius: 0;
+}
+
+.code-display.fullscreen pre {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+/* Remove line numbers for wider code display */
 .code-display pre {
   margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  padding-left: 0; /* Remove left padding for more code space */
 }
 
 .code-display code {
-  color: #d4d4d4;
-  font-family: monospace;
-  line-height: 1.5;
-  font-size: 0.9em;
-  white-space: pre-wrap;
+  color: #e2e8f0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .demo-section {
@@ -277,7 +441,7 @@ const RenderTreeNode = (props: { node: TreeNode }) => {
 }
 
 /* Large screens */
-@media (min-width: 1400px) {
+@media (min-width: 1700px) {
   .code-section {
     max-width: calc(50% - 10px);
   }

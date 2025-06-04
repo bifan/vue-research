@@ -132,7 +132,7 @@ onUnmounted(() => {
 
 .content-wrapper {
   width: 100%;
-  max-width: 1400px; /* Limit width on very large screens */
+  max-width: 1700px; /* Increase max width for better use of large screens */
   padding: 0 20px;
 }
 
@@ -211,12 +211,12 @@ h2 {
 
 .comparison-box {
   flex: 1;
-  min-width: 300px; /* Ensures boxes don't become too narrow */
-  max-width: calc(50% - 10px); /* Ensures boxes don't get too wide on large screens */
+  min-width: 400px; /* Increase minimum width for better code display */
+  max-width: calc(50% - 10px);
   border: 1px solid var(--color-border, #eee);
   border-radius: 4px;
   padding: 15px;
-  overflow: hidden; /* Prevents content overflow */
+  overflow: hidden;
 }
 
 .key-points {
@@ -265,7 +265,7 @@ h2 {
 }
 
 /* Large screens */
-@media (min-width: 1400px) {
+@media (min-width: 1700px) {
   .comparison-box {
     max-width: calc(50% - 10px);
   }
@@ -273,6 +273,111 @@ h2 {
   .code-display {
     max-height: 600px; /* More space for code on large screens */
   }
+}
+
+/* Enhanced code display for better width utilization */
+:deep(.code-display) {
+  /* Maximize code display area */
+  width: 100%;
+  max-width: none;
+
+  /* Improve horizontal scrolling */
+  overflow-x: auto;
+  overflow-y: auto;
+
+  /* Better text wrapping for long lines */
+  white-space: pre;
+  word-wrap: normal;
+}
+
+:deep(.code-display pre) {
+  /* Allow horizontal scrolling for long lines */
+  white-space: pre;
+  overflow-x: auto;
+  min-width: 100%;
+}
+
+/* Full width mode for single code blocks */
+.full-width-code {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+}
+
+/* Large screens optimization */
+@media (min-width: 1600px) {
+  .content-wrapper {
+    max-width: 1800px; /* Even wider on very large screens */
+  }
+
+  .comparison-box {
+    min-width: 500px; /* More space for code on large screens */
+  }
+}
+
+/* Global code display enhancements */
+:deep(.code-display) {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #2d3748;
+
+  /* Better text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* Accessibility improvements */
+  tab-size: 2;
+  -moz-tab-size: 2;
+
+  /* Focus styles for accessibility */
+  &:focus-within {
+    outline: 2px solid #90cdf4;
+    outline-offset: 2px;
+  }
+}
+
+:deep(.code-display::-webkit-scrollbar) {
+  width: 8px;
+  height: 8px;
+}
+
+:deep(.code-display::-webkit-scrollbar-track) {
+  background: #2d3748;
+  border-radius: 4px;
+}
+
+:deep(.code-display::-webkit-scrollbar-thumb) {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+:deep(.code-display::-webkit-scrollbar-thumb:hover) {
+  background: #718096;
+}
+
+:deep(.code-display code) {
+  /* Higher contrast text for better readability */
+  color: #f7fafc;
+}
+
+/* Enhanced visual hierarchy */
+:deep(.code-header .code-language) {
+  position: relative;
+}
+
+:deep(.code-header .code-language::before) {
+  content: '💻';
+  margin-right: 6px;
+}
+
+/* Copy success feedback */
+:deep(.copy-button.copied) {
+  background-color: #48bb78 !important;
+  color: white !important;
+}
+
+:deep(.copy-button.copied::after) {
+  content: ' ✓';
 }
 
 /* Medium screens */
@@ -292,6 +397,12 @@ h2 {
     min-width: 100%;
     max-width: 100%;
   }
+
+  /* Give code more space on tablets */
+  :deep(.code-display) {
+    font-size: 13px;
+    padding: 18px;
+  }
 }
 
 /* Mobile screens */
@@ -303,6 +414,41 @@ h2 {
   .section-nav a {
     padding: 6px 10px;
     font-size: 0.85rem;
+  }
+
+  /* Code display optimizations for mobile */
+  :deep(.code-display) {
+    font-size: 12px;
+    padding: 15px;
+    max-height: 300px;
+  }
+
+  :deep(.code-display pre) {
+    padding-left: 30px;
+  }
+
+  :deep(.code-display pre::before) {
+    width: 25px;
+  }
+
+  :deep(.code-display code::before) {
+    left: -25px;
+    width: 20px;
+    font-size: 10px;
+  }
+
+  :deep(.code-header) {
+    padding: 6px 10px;
+    margin: -15px -15px 0 -15px;
+  }
+
+  :deep(.code-language) {
+    font-size: 10px;
+  }
+
+  :deep(.copy-button) {
+    font-size: 12px;
+    padding: 2px 6px;
   }
 }
 </style>

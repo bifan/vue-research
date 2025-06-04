@@ -63,13 +63,9 @@ const renderDemo = () => {
     ]),
   ])
 }
-</script>
 
-<template>
-  <div class="render-demo">
-    <div class="code-display">
-      <pre v-pre><code>
-import { h } from 'vue'
+// Render函数代码内容
+const renderCode = `import { h } from 'vue'
 
 // render 函数
 const render = () => {
@@ -102,8 +98,107 @@ const render = () => {
       h('button', { onClick: addItem }, 'Add Item')
     ])
   ])
+}`
+
+// Copy code functionality
+const copyCode = async () => {
+  const codeContent = `import { h } from 'vue'
+
+// render 函数
+const render = () => {
+  return h('div', [
+    h('h3', message.value),
+    
+    // 条件渲染
+    showMessage.value 
+      ? h('div', [
+          h('p', 'Count: ' + count.value),
+          h('p', 'Double: ' + doubleCount.value)
+        ])
+      : null,
+    
+    // 按钮
+    h('button', { onClick: increment }, 'Increment'),
+    h('button', { onClick: toggleMessage }, 
+      showMessage.value ? 'Hide' : 'Show' + ' Message'),
+    
+    // 列表部分
+    h('div', { class: 'list-section' }, [
+      h('h4', 'Items:'),
+      h('ul', items.value.map(item => 
+        h('li', {
+          key: item,
+          onClick: () => selectItem(item),
+          class: { selected: selected.value === item }
+        }, item)
+      )),
+      h('button', { onClick: addItem }, 'Add Item')
+    ])
+  ])
+}`
+
+  try {
+    await navigator.clipboard.writeText(codeContent)
+    // Could add a toast notification here
+  } catch (err) {
+    console.error('Failed to copy code:', err)
+  }
 }
-      </code></pre>
+
+// Fullscreen functionality
+const isFullscreen = ref(false)
+
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+  const appElement = document.documentElement
+
+  if (isFullscreen.value) {
+    if (appElement.requestFullscreen) {
+      appElement.requestFullscreen()
+    } else if (appElement.mozRequestFullScreen) {
+      // Firefox
+      appElement.mozRequestFullScreen()
+    } else if (appElement.webkitRequestFullscreen) {
+      // Chrome, Safari and Opera
+      appElement.webkitRequestFullscreen()
+    } else if (appElement.msRequestFullscreen) {
+      // IE/Edge
+      appElement.msRequestFullscreen()
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen()
+    } else if (document.mozCancelFullScreen) {
+      // Firefox
+      document.mozCancelFullScreen()
+    } else if (document.webkitExitFullscreen) {
+      // Chrome, Safari and Opera
+      document.webkitExitFullscreen()
+    } else if (document.msExitFullscreen) {
+      // IE/Edge
+      document.msExitFullscreen()
+    }
+  }
+}
+</script>
+
+<template>
+  <div class="render-demo">
+    <div class="code-display" :class="{ fullscreen: isFullscreen }">
+      <div class="code-header">
+        <span class="code-language">Render Function</span>
+        <div class="code-actions">
+          <button
+            class="action-button"
+            @click="toggleFullscreen"
+            :title="isFullscreen ? '退出全屏' : '全屏显示'"
+          >
+            {{ isFullscreen ? '⤴' : '⤢' }}
+          </button>
+          <button class="action-button" @click="copyCode" title="复制代码">📋</button>
+        </div>
+      </div>
+      <pre v-pre><code>{{ renderCode }}</code></pre>
     </div>
 
     <div class="demo-result">
@@ -119,30 +214,152 @@ const render = () => {
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  overflow: hidden; /* Prevents content overflow */
-  max-width: 800px; /* Reasonable width limit */
+  overflow: hidden;
+  max-width: 1700px; /* Increase max width for better code display */
   margin: 0 auto;
 }
 
+/* Code header styling */
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1a202c;
+  border-bottom: 1px solid #4a5568;
+  border-radius: 8px 8px 0 0;
+  margin: -20px -20px 0 -20px;
+}
+
+.code-language {
+  color: #90cdf4;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+/* Fullscreen styles */
+.code-display.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.code-display.fullscreen .code-header {
+  border-radius: 0;
+}
+
+.code-display.fullscreen pre {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
 .code-display {
-  background-color: #1e1e1e;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: #2d3748;
+  border-radius: 8px;
+  padding: 20px;
   overflow-x: auto;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .code-display pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: break-word;
+  padding-left: 0; /* Remove left padding to give code more space */
 }
 
 .code-display code {
-  color: #d4d4d4;
-  font-family: monospace;
-  line-height: 1.5;
+  color: #e2e8f0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 500;
+  display: block;
+}
+
+/* Remove line numbers for wider code display */
+
+/* Syntax highlighting for JavaScript/TypeScript */
+:deep(.code-display) .js-keyword {
+  color: #c792ea;
+  font-weight: 600;
+}
+
+:deep(.code-display) .js-function {
+  color: #82aaff;
+}
+
+:deep(.code-display) .js-string {
+  color: #c3e88d;
+}
+
+:deep(.code-display) .js-comment {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+:deep(.code-display) .js-variable {
+  color: #f78c6c;
+}
+
+/* Better scrollbar for code areas */
+.code-display::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.code-display::-webkit-scrollbar-track {
+  background: #1a202c;
+  border-radius: 4px;
+}
+
+.code-display::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+.code-display::-webkit-scrollbar-thumb:hover {
+  background: #718096;
 }
 
 .demo-result {

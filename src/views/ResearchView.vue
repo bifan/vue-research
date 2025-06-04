@@ -113,7 +113,7 @@ onUnmounted(() => {
 <style scoped>
 .research-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 20px;
   scroll-behavior: smooth;

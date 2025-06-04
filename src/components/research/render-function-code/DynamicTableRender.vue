@@ -177,6 +177,95 @@ const resetTable = () => {
   tableState.filters = {}
 }
 
+// 复制代码功能
+const copyCode = async () => {
+  const codeContent = `import { h } from 'vue'
+
+// 使用render函数渲染动态表格
+const renderTable = () => {
+  const renderHeader = () => {
+    return h('thead', [
+      h('tr', columns.value.map(column => 
+        h('th', {
+          key: column.key,
+          style: column.width ? { width: column.width + 'px' } : {}
+        }, [
+          h('div', { class: 'th-content' }, [
+            h('span', column.title),
+            
+            // 排序图标
+            column.sortable ? h('span', {
+              class: 'sort-icon',
+              onClick: () => handleSort(column.key)
+            }, tableState.sortColumn === column.key 
+                ? (tableState.sortDirection === 'asc' ? '↑' : '↓') 
+                : '↕'
+            ) : null,
+            
+            // 筛选图标和下拉
+            column.filters ? [
+              h('span', {
+                class: 'filter-icon',
+                onClick: () => toggleFilter(column.key)
+              }, '🔽'),
+              
+              activeFilter.value === column.key ? h('div', {
+                class: 'filter-dropdown'
+              }, [
+                ...column.filters.map(filter => 
+                  h('div', {
+                    class: 'filter-option',
+                    onClick: () => handleFilter(column.key, filter.value)
+                  }, filter.text)
+                ),
+                h('div', {
+                  class: 'filter-option',
+                  onClick: () => handleFilter(column.key, null)
+                }, '全部')
+              ]) : null
+            ] : null
+          ])
+        ])
+      ))
+    ])
+  }
+
+  const renderBody = () => {
+    return h('tbody', 
+      processedData.value.map(item => 
+        h('tr', { key: item.id },
+          columns.value.map(column => 
+            h('td', { key: column.key },
+              column.customRender 
+                ? column.customRender(item[column.key], item)
+                : item[column.key]
+            )
+          )
+        )
+      )
+    )
+  }
+
+  return h('div', { class: 'table-container' }, [
+    h('table', [renderHeader(), renderBody()])
+  ])
+}`
+
+  try {
+    await navigator.clipboard.writeText(codeContent)
+    console.log('代码已复制到剪贴板')
+  } catch (err) {
+    console.error('复制失败:', err)
+  }
+}
+
+// 全屏功能
+const isFullscreen = ref(false)
+
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+}
+
 // 使用render函数渲染表格
 const renderTable = () => {
   // 渲染表头
@@ -371,7 +460,20 @@ const renderTable = () => {
 
 <template>
   <div class="dynamic-table-render">
-    <div class="code-display">
+    <div class="code-display" :class="{ fullscreen: isFullscreen }">
+      <div class="code-header">
+        <span class="code-language">Vue Dynamic Table Render Function</span>
+        <div class="code-actions">
+          <button
+            class="action-button"
+            @click="toggleFullscreen"
+            :title="isFullscreen ? '退出全屏' : '全屏显示'"
+          >
+            {{ isFullscreen ? '⤴' : '⤢' }}
+          </button>
+          <button class="action-button" @click="copyCode" title="复制代码">📋</button>
+        </div>
+      </div>
       <pre v-pre><code>{{ renderFunctionCode }}</code></pre>
     </div>
 
@@ -406,38 +508,151 @@ const renderTable = () => {
   gap: 20px;
   width: 100%;
   overflow: hidden; /* Prevents content overflow */
-  max-width: 1200px; /* Limit width on large screens */
+  max-width: 1700px; /* Increase width for better code display */
   margin: 0 auto;
 }
 
 .code-display {
-  background-color: #1e1e1e;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: #2d3748;
+  border-radius: 8px;
+  padding: 20px;
   overflow-x: auto;
   max-height: 400px;
   overflow-y: auto;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Code header styling */
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1a202c;
+  border-bottom: 1px solid #4a5568;
+  border-radius: 8px 8px 0 0;
+  margin: -20px -20px 0 -20px;
+}
+
+.code-language {
+  color: #90cdf4;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+/* Fullscreen styles */
+.code-display.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  height: 100vh;
+  width: 100vw;
+  max-height: none;
+}
+
+.code-display.fullscreen .code-header {
+  border-radius: 0;
+}
+
+.code-display.fullscreen pre {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+/* Line numbers for code display */
+.code-display pre {
+  counter-reset: line;
+  padding-left: 40px;
+  position: relative;
+}
+
+.code-display pre::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 35px;
+  background-color: #1a202c;
+  border-right: 1px solid #4a5568;
+}
+
+.code-display code::before {
+  counter-increment: line;
+  content: counter(line);
+  position: absolute;
+  left: -35px;
+  width: 30px;
+  text-align: right;
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.6;
+  padding-right: 8px;
 }
 
 .code-display pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .code-display code {
-  color: #d4d4d4;
-  font-family: monospace;
-  line-height: 1.5;
-  font-size: 0.85em;
+  color: #e2e8f0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .demo-result {
   background-color: var(--color-background-mute, #f5f5f5);
   padding: 15px;
   border-radius: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .demo-result {
+    background-color: var(--color-background-mute, #2d3748);
+    border: 1px solid #4a5568;
+  }
 }
 
 .demo-result h4 {
@@ -485,16 +700,31 @@ button:hover {
 
 :deep(th),
 :deep(td) {
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border, #ddd);
   padding: 8px 12px;
   text-align: left;
+  background-color: var(--color-background, #fff);
+  color: var(--color-text, #333);
 }
 
 :deep(th) {
-  background-color: #f0f0f0;
+  background-color: var(--color-background-soft, #f0f0f0);
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  :deep(th),
+  :deep(td) {
+    border-color: var(--color-border, #4a5568);
+    background-color: var(--color-background, #1a202c);
+    color: var(--color-text, #e2e8f0);
+  }
+
+  :deep(th) {
+    background-color: var(--color-background-soft, #2d3748);
+  }
 }
 
 :deep(.th-content) {
@@ -531,32 +761,57 @@ button:hover {
 :deep(.dropdown-content) {
   display: none;
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background, white);
   min-width: 120px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 20;
   border-radius: 4px;
   right: 0;
+  border: 1px solid var(--color-border, #ddd);
 }
 
 :deep(.dropdown-content div) {
   padding: 8px 12px;
   cursor: pointer;
   font-size: 0.9em;
+  color: var(--color-text, #333);
 }
 
 :deep(.dropdown-content div:hover) {
-  background-color: #f5f5f5;
+  background-color: var(--color-background-mute, #f5f5f5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :deep(.dropdown-content) {
+    background-color: var(--color-background, #2d3748);
+    border-color: var(--color-border, #4a5568);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  :deep(.dropdown-content div) {
+    color: var(--color-text, #e2e8f0);
+  }
+
+  :deep(.dropdown-content div:hover) {
+    background-color: var(--color-background-mute, #4a5568);
+  }
 }
 
 :deep(.tag) {
   display: inline-block;
   padding: 2px 8px;
   margin-right: 5px;
-  background-color: #e8f0fe;
+  background-color: var(--color-primary-light, #e8f0fe);
   border-radius: 12px;
   font-size: 0.85em;
-  color: #3a8ee6;
+  color: var(--color-primary, #3a8ee6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :deep(.tag) {
+    background-color: rgba(58, 142, 230, 0.2);
+    color: #90cdf4;
+  }
 }
 
 :deep(.status-badge) {
@@ -566,26 +821,49 @@ button:hover {
 }
 
 :deep(.status-badge.active) {
-  background-color: #e3f7e8;
-  color: #52c41a;
+  background-color: var(--success-light, #e3f7e8);
+  color: var(--success, #52c41a);
 }
 
 :deep(.status-badge.inactive) {
-  background-color: #fff1f0;
-  color: #ff4d4f;
+  background-color: var(--error-light, #fff1f0);
+  color: var(--error, #ff4d4f);
+}
+
+@media (prefers-color-scheme: dark) {
+  :deep(.status-badge.active) {
+    background-color: rgba(82, 196, 26, 0.2);
+    color: #95de64;
+  }
+
+  :deep(.status-badge.inactive) {
+    background-color: rgba(255, 77, 79, 0.2);
+    color: #ff7875;
+  }
 }
 
 .render-advantages {
   margin-top: 20px;
-  background-color: #e6f7ff;
-  border-left: 4px solid #1890ff;
+  background-color: var(--info-light, #e6f7ff);
+  border-left: 4px solid var(--info, #1890ff);
   padding: 12px 15px;
   border-radius: 0 4px 4px 0;
 }
 
 .render-advantages h4 {
   margin: 0 0 10px 0;
-  color: #0050b3;
+  color: var(--info-dark, #0050b3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .render-advantages {
+    background-color: rgba(24, 144, 255, 0.1);
+    border-left-color: #40a9ff;
+  }
+
+  .render-advantages h4 {
+    color: #40a9ff;
+  }
 }
 
 .render-advantages ul {
@@ -599,7 +877,7 @@ button:hover {
 }
 
 /* Custom media queries for wide screens */
-@media (min-width: 1400px) {
+@media (min-width: 1700px) {
   .code-display {
     max-height: 600px; /* More space for code on large screens */
   }
