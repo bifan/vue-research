@@ -90,40 +90,13 @@ const templateCode = [
   '}',
   '</' + 'script>',
 ].join('\n')
-
-// 复制代码功能
-const copyCode = async () => {
-  try {
-    await navigator.clipboard.writeText(templateCode)
-    console.log('代码已复制到剪贴板')
-  } catch (err) {
-    console.error('复制代码失败:', err)
-  }
-}
-
-// 全屏功能
-const isFullscreen = ref(false)
-
-const toggleFullscreen = () => {
-  isFullscreen.value = !isFullscreen.value
-}
 </script>
 
 <template>
   <div class="template-demo">
-    <div class="code-display" :class="{ fullscreen: isFullscreen }">
+    <div class="code-display">
       <div class="code-header">
         <span class="code-language">Vue Template</span>
-        <div class="code-actions">
-          <button
-            class="action-button"
-            @click="toggleFullscreen"
-            :title="isFullscreen ? '退出全屏' : '全屏显示'"
-          >
-            {{ isFullscreen ? '⤴' : '⤢' }}
-          </button>
-          <button class="action-button" @click="copyCode" title="复制代码">📋</button>
-        </div>
       </div>
       <pre><code>{{ templateCode }}</code></pre>
     </div>
@@ -199,55 +172,6 @@ const toggleFullscreen = () => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-}
-
-.code-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.action-button {
-  background: none;
-  border: none;
-  color: #a0aec0;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: all 0.2s;
-  min-width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.action-button:hover {
-  background-color: #2d3748;
-  color: #e2e8f0;
-}
-
-.code-display.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999;
-  max-width: none;
-  margin: 0;
-  border-radius: 0;
-  height: 100vh;
-  width: 100vw;
-}
-
-.code-display.fullscreen .code-header {
-  border-radius: 0;
-}
-
-.code-display.fullscreen pre {
-  height: calc(100vh - 60px);
-  overflow-y: auto;
 }
 
 .code-display pre {
