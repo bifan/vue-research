@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RenderFunctionResearch } from '@/components/research/render-function'
+import { RenderResearch } from '@/components/research/render-function'
+import { RenderFunctionCodeResearch } from '@/components/research/render-function-code'
 import { ref, computed, markRaw, onMounted, onUnmounted } from 'vue'
 
 // 当前选择的研究项目
@@ -12,7 +13,14 @@ const researchProjects = [
     name: 'Template vs Render 函数',
     description: 'Vue模板系统与Render函数的对比分析',
     icon: '🔍',
-    component: markRaw(RenderFunctionResearch),
+    component: markRaw(RenderResearch),
+  },
+  {
+    id: 'render-code',
+    name: 'Render 函数代码实例',
+    description: '展示Template瓶颈与Render函数优势的代码示例',
+    icon: '💻',
+    component: markRaw(RenderFunctionCodeResearch),
   },
   // 在这里可以添加更多的研究项目
   // 示例：
@@ -104,10 +112,12 @@ onUnmounted(() => {
 
 <style scoped>
 .research-container {
-  max-width: 1100px;
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 20px;
   scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 .directory-header {
@@ -123,9 +133,10 @@ h1 {
 
 .research-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 20px;
   margin-bottom: 40px;
+  max-width: 100%;
 }
 
 .research-card {
